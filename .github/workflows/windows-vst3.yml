@@ -15,11 +15,14 @@ jobs:
           repository: juce-framework/JUCE
           ref: master
           path: JUCE
-      - name: Configure
+      - name: Enable MSVC developer environment
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Configure with Ninja and MSVC
         shell: pwsh
-        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DJUCE_SOURCE_DIR="${{ github.workspace }}/JUCE"
-      - name: Build
-        run: cmake --build build --config Release --target HaitianKompaMachine_VST3 --parallel 2
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DJUCE_SOURCE_DIR="${{ github.workspace }}/JUCE"
+      - name: Build VST3
+        shell: pwsh
+        run: cmake --build build --target HaitianKompaMachine_VST3 --parallel 2
       - name: Upload VST3 artifact
         uses: actions/upload-artifact@v4
         with:
